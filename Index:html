@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Goal Tracker 🚀</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #667eea; }
+        button#add-btn { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        ul { list-style: none; padding: 0; }
+        li { background: #f8f9fa; margin-bottom: 10px; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; border-left: 5px solid #667eea; }
+        li:hover { transform: scale(1.02); }
+        .delete-btn { color: #ff4d4d; cursor: pointer; font-weight: bold; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎯 Goal Tracker</h2>
+    <div class="input-group">
+        <input type="text" id="goalInput" placeholder="आज का लक्ष्य लिखें...">
+        <button id="add-btn" onclick="newElement()">जोड़ें</button>
+    </div>
+    <ul id="myUL"></ul>
+</div>
+
+<script>
+    // पेज लोड होते ही पुराने गोल्स दिखाना
+    document.addEventListener('DOMContentLoaded', getGoals);
+
+    function newElement() {
+        var inputValue = document.getElementById("goalInput").value;
+        if (inputValue === '') { alert("कुछ तो लिखो!"); return; }
+        
+        addGoalToList(inputValue);
+        saveLocalGoals(inputValue);
+        document.getElementById("goalInput").value = "";
+    }
+
+    function addGoalToList(todo) {
+        var li = document.createElement("li");
+        li.innerHTML = todo + `<span class="delete-btn" onclick="removeGoal(this)">×</span>`;
+        document.getElementById("myUL").appendChild(li);
+    }
+
+    function saveLocalGoals(goal) {
+        let goals = localStorage.getItem("goals") ? JSON.parse(localStorage.getItem("goals")) : [];
+        goals.push(goal);
+        localStorage.setItem("goals", JSON.stringify(goals));
+    }
+
+    function getGoals() {
+        let goals = localStorage.getItem("goals") ? JSON.parse(localStorage.getItem("goals")) : [];
+        goals.forEach(goal => addGoalToList(goal));
+    }
+
+    function removeGoal(element) {
+        let goalText = element.parentElement.firstChild.textContent;
+        element.parentElement.remove();
+        let goals = JSON.parse(localStorage.getItem("goals"));
+        goals = goals.filter(g => g !== goalText);
+        localStorage.setItem("goals", JSON.stringify(goals));
+    }
+</script>
+
+</body>
+</html>
